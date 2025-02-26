@@ -286,7 +286,6 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
     int bosshp[5] = { 100, 1500, 2000, 2500, 3000};
     int bossatk[5] = { 100, 125, 150, 200, 220}; /*STC*/
     int i, choice;
-    *point = *s_count;
     if(i > 4 && *point > 4){
         i = 0;
         *point = 0;
@@ -310,8 +309,8 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
 
             system("cls");
             printf("\nBOSS LEVEL %d", i + 1);
-            printf("\nBOSS NAME: %s", bossname[i]);
-            printf("\nBOSS HP: %d", bosshp[i]);
+            printf("\nBOSS NAME: %s", bossname[*point]);
+            printf("\nBOSS HP: %d", bosshp[*point]);
             printf("\n");
             printf("\nYOUR HP: %d", *hp);
             printf("\nYOUR WEAPON: %s", wname);
@@ -341,7 +340,6 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
             
             if(bosshp[i] <= 0){
                 *point += 1;
-                *s_count = *point;
                 *coin += rand() % 1000; 
                 break;
             }
@@ -435,7 +433,7 @@ void ingame(char nama[100], int *hp, int *coin, int *point){
         printf("\nYour HP: %d", *hp);
         printf("\nYour Coin: %d", *coin);
         printf("\nWHAT WILL YOU DO?");
-        printf("\n1. DUNGEON\n2. ADVENTURE\n3. EXIT");
+        printf("\n1. DUNGEON(Level : %d)\n2. ADVENTURE\n3. EXIT", *point + 1);
         printf("\nYour Choice: ");scanf("%d", &choice);
         switch(choice){
             case 1:
@@ -503,11 +501,13 @@ void loaduser(){
         printf("\nERROR");
         return;
     }
-
+    system("cls");
+    printf("\nList: ");
     while(fgets(buffer, sizeof(buffer), file) != NULL){
         sscanf(buffer, "%[^,],%d,%d,%d", tempnama, &temphp, &tempcoin, &temppoint);
         printf("\nUsername: %s", tempnama);
         printf("\nHP: %d    Coin: %d", temphp, tempcoin);
+        printf("\nLEVEL: %d", temppoint);
         printf("\n");
     }
 
@@ -542,6 +542,7 @@ void newuser(){
     int hp = 1000;
     int point = 0;
 
+    system("cls");
     printf("\n== NEW USER ==");
     printf("\nName: ");scanf("%s", nama);
 
@@ -563,7 +564,7 @@ void newuser(){
 
 int main(){
     int choice;
-
+    system("cls");
     printf("\nWELCOME TO SWITCH AND KILL");
     printf("\n1. NEW GAME\n2. LOAD GAME");
     printf("\nINSERT YOUR CHOICE: ");scanf("%d", &choice);
