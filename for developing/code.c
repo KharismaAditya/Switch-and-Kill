@@ -488,6 +488,54 @@ void savefile(char nama[100], int *hp, int *coin, int *point){
     }
 }
 
+void loaduser(){
+    char nama[100];
+    int hp, coin, point;
+
+    char tempnama[100];
+    int temphp, tempcoin, temppoint;
+    
+    char buffer[100], target[100];
+    int found = 0;  
+
+    FILE *file = fopen("save.txt", "r");
+    if(file == NULL){
+        printf("\nERROR");
+        return;
+    }
+
+    while(fgets(buffer, sizeof(buffer), file) != NULL){
+        sscanf(buffer, "%[^,],%d,%d,%d", tempnama, &temphp, &tempcoin, &temppoint);
+        printf("\nUsername: %s", tempnama);
+        printf("\nHP: %d    Coin: %d", temphp, tempcoin);
+        printf("\n");
+    }
+
+    rewind(file);
+
+    printf("\nMasukkan username yang ingin anda load: ");scanf("%s", target);
+    while(fgets(buffer, sizeof(buffer), file) != NULL){
+        sscanf(buffer, "%[^,],%d,%d,%d", tempnama, &temphp, &tempcoin, &temppoint);
+        if(strcmp(tempnama, target) == 0){
+            strcpy(nama, tempnama);
+            hp = temphp;
+            coin = tempcoin;
+            point = temppoint;
+            found = 1;
+            break;
+        }
+    }
+    
+    fclose(file);
+    if(found == 1){
+        printf("\nSelamat datang %s", nama);
+        ingame(nama, &hp, &coin, &point);
+        savefile(nama, &hp, &coin, &point);
+    }else{
+        printf("\nDATA TIDAK DITEMUKAN");
+    }
+
+}
 void newuser(){
     char nama[100];
     int coin = 0;
@@ -514,5 +562,20 @@ void newuser(){
 
 
 int main(){
-    newuser();
+    int choice;
+
+    printf("\nWELCOME TO SWITCH AND KILL");
+    printf("\n1. NEW GAME\n2. LOAD GAME");
+    printf("\nINSERT YOUR CHOICE: ");scanf("%d", &choice);
+    switch(choice){
+        case 1:
+            newuser();
+            break;
+        case 2:
+            loaduser();
+            break;
+        default:
+            printf("\nERROR");
+    }
+
 }
