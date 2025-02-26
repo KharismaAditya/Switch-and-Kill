@@ -413,14 +413,17 @@ void adventurebattle(int *hp, int *coin, int *coin_menu, int num1, int num2, int
     sleep(2);
 }
 
-int main(){
-    int num1, num2, point;
-    if(point >= 4){
-        point = 0;
+void userload(char nama, int hp, int coin, int point){
+
+}
+
+void ingame(char nama[100], int *hp, int *coin, int *point){
+    int num1, num2;
+    if(*point >= 4){
+        *point = 0;
     }
     int count, coin_menu = 0;
-    int hp = 1000;
-    int coin = 0;
+
 
 
     int choice;
@@ -428,17 +431,18 @@ int main(){
     while(choice != 3){
         system("cls");
         printf("\n==TOWNHALL==");
-        printf("\nYour HP: %d", hp);
-        printf("\nYour Coin: %d", coin);
+        printf("\nNAME: %s", nama);
+        printf("\nYour HP: %d", *hp);
+        printf("\nYour Coin: %d", *coin);
         printf("\nWHAT WILL YOU DO?");
         printf("\n1. DUNGEON\n2. ADVENTURE\n3. EXIT");
         printf("\nYour Choice: ");scanf("%d", &choice);
         switch(choice){
             case 1:
-                bodybattle(num1, num2, count, &hp, &coin, &coin_menu, &count, &point);
+                bodybattle(num1, num2, count, hp, coin, &coin_menu, &count, point);
                 break;
             case 2:
-                adventurebattle(&hp, &coin, &coin_menu, num1, num2, count, &point);
+                adventurebattle(hp, coin, &coin_menu, num1, num2, count, point);
                 break;
             case 3:
                 break;
@@ -447,6 +451,31 @@ int main(){
         sleep(2);
         
     }
-    
-    return 0;
 }   
+
+void newuser(){
+    char nama[100];
+    int coin = 0;
+    int hp = 1000;
+    int point = 0;
+
+    printf("\n== NEW USER ==");
+    printf("\nName: ");scanf("%s", nama);
+
+
+    FILE *file = fopen("save.txt", "a");
+    if(file== NULL){
+        printf("\nERROR");
+    }
+
+    fprintf(file, "%s,%d,%d,%d\n", nama, hp, coin, point);
+    fclose(file);
+
+    ingame(nama, &hp, &coin, &point);
+};
+
+
+
+int main(){
+    newuser();
+}
