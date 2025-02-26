@@ -453,6 +453,41 @@ void ingame(char nama[100], int *hp, int *coin, int *point){
     }
 }   
 
+void savefile(char nama[100], int *hp, int *coin, int *point){
+    FILE *file = fopen("save.txt", "r");
+    FILE *temp = fopen("tempsave.txt", "w");
+    char buffer[100], target[100];
+    int found = 0;
+    
+    int temphp, tempcoin, temppoint;
+    if(file == NULL || temp == NULL){
+        printf("\nERROR");
+        return;
+    }
+
+    printf("\nSAVING YOUR PROGRESS");
+    printf("\nMasukkan Username anda: ");scanf("%s", target);
+    while(fgets(buffer, sizeof(buffer), file) != NULL){
+        sscanf(buffer, "%[^,],%d,%d,%d", nama, &temphp, &tempcoin, &temppoint);
+        if(strcmp(nama, target) == 0){
+            found = 1;
+            fprintf(temp, "%s,%d,%d,%d\n", nama, *hp, *coin, *point);
+        }else{
+            fprintf(temp, "%s,%d,%d,%d\n", nama, temphp, tempcoin, temppoint);
+        }
+    }
+
+    fclose(temp);fclose(file);
+    if(found == 1){
+        printf("\nSAVED");
+        remove("save.txt");
+        rename("tempsave.txt", "save.txt");
+    }else{
+        printf("\nERROR 05");
+        remove("tempsave.txt");
+    }
+}
+
 void newuser(){
     char nama[100];
     int coin = 0;
@@ -466,12 +501,14 @@ void newuser(){
     FILE *file = fopen("save.txt", "a");
     if(file== NULL){
         printf("\nERROR");
+        return;
     }
 
     fprintf(file, "%s,%d,%d,%d\n", nama, hp, coin, point);
     fclose(file);
 
     ingame(nama, &hp, &coin, &point);
+    savefile(nama, &hp, &coin, &point);
 };
 
 
