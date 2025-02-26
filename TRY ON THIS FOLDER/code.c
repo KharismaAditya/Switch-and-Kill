@@ -43,11 +43,11 @@ const char kertas[5][100] = {
 };
 
 const char bossname[5][100] = {
-    "Vrakthar",
-    "Zylnor",
-    "Eryndra",
-    "Thraxxus",
-    "Kaelith"
+    "Zylnor", /*FIRE STRUCK*/
+    "Eryndra", /*BLIND*/
+    "Thraxxus", /*BONE OT STEEL*/
+    "Kaelith", /*ELECTRO CHARGE*/
+    "Vrakthar" /*EMPEROR OF TIME*/
 };
 
 const char item_name[4][100] = {
@@ -283,10 +283,9 @@ void effectindicator(int *c_effect1, int *c_effect2){
 void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_menu, int *s_count, int *point){
 
 
-    int bosshp[5] = { 1000, 1500, 2000, 2500, 3000};
+    int bosshp[5] = { 100, 1500, 2000, 2500, 3000};
     int bossatk[5] = { 100, 125, 150, 200, 220}; /*STC*/
     int i, choice;
-    *point = *s_count;
     if(i > 4 && *point > 4){
         i = 0;
         *point = 0;
@@ -310,8 +309,8 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
 
             system("cls");
             printf("\nBOSS LEVEL %d", i + 1);
-            printf("\nBOSS NAME: %s", bossname[i]);
-            printf("\nBOSS HP: %d", bosshp[i]);
+            printf("\nBOSS NAME: %s", bossname[*point]);
+            printf("\nBOSS HP: %d", bosshp[*point]);
             printf("\n");
             printf("\nYOUR HP: %d", *hp);
             printf("\nYOUR WEAPON: %s", wname);
@@ -341,7 +340,6 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
             
             if(bosshp[i] <= 0){
                 *point += 1;
-                *s_count = *point;
                 *coin += rand() % 1000; 
                 break;
             }
@@ -413,14 +411,17 @@ void adventurebattle(int *hp, int *coin, int *coin_menu, int num1, int num2, int
     sleep(2);
 }
 
-int main(){
-    int num1, num2, point;
-    if(point >= 4){
-        point = 0;
+void userload(char nama, int hp, int coin, int point){
+
+}
+
+void ingame(char nama[100], int *hp, int *coin, int *point){
+    int num1, num2;
+    if(*point >= 4){
+        *point = 0;
     }
     int count, coin_menu = 0;
-    int hp = 1000;
-    int coin = 0;
+
 
 
     int choice;
@@ -428,17 +429,18 @@ int main(){
     while(choice != 3){
         system("cls");
         printf("\n==TOWNHALL==");
-        printf("\nYour HP: %d", hp);
-        printf("\nYour Coin: %d", coin);
+        printf("\nNAME: %s", nama);
+        printf("\nYour HP: %d", *hp);
+        printf("\nYour Coin: %d", *coin);
         printf("\nWHAT WILL YOU DO?");
-        printf("\n1. DUNGEON\n2. ADVENTURE\n3. EXIT");
+        printf("\n1. DUNGEON(Level : %d)\n2. ADVENTURE\n3. EXIT", *point + 1);
         printf("\nYour Choice: ");scanf("%d", &choice);
         switch(choice){
             case 1:
-                bodybattle(num1, num2, count, &hp, &coin, &coin_menu, &count, &point);
+                bodybattle(num1, num2, count, hp, coin, &coin_menu, &count, point);
                 break;
             case 2:
-                adventurebattle(&hp, &coin, &coin_menu, num1, num2, count, &point);
+                adventurebattle(hp, coin, &coin_menu, num1, num2, count, point);
                 break;
             case 3:
                 break;
@@ -447,6 +449,134 @@ int main(){
         sleep(2);
         
     }
-    
-    return 0;
 }   
+
+void savefile(char nama[100], int *hp, int *coin, int *point){
+    FILE *file = fopen("save.txt", "r");
+    FILE *temp = fopen("tempsave.txt", "w");
+    char buffer[100], target[100];
+    int found = 0;
+    
+    int temphp, tempcoin, temppoint;
+    if(file == NULL || temp == NULL){
+        printf("\nERROR");
+        return;
+    }
+
+    printf("\nSAVING YOUR PROGRESS");
+    printf("\nMasukkan Username anda: ");scanf("%s", target);
+    while(fgets(buffer, sizeof(buffer), file) != NULL){
+        sscanf(buffer, "%[^,],%d,%d,%d", nama, &temphp, &tempcoin, &temppoint);
+        if(strcmp(nama, target) == 0){
+            found = 1;
+            fprintf(temp, "%s,%d,%d,%d\n", nama, *hp, *coin, *point);
+        }else{
+            fprintf(temp, "%s,%d,%d,%d\n", nama, temphp, tempcoin, temppoint);
+        }
+    }
+
+    fclose(temp);fclose(file);
+    if(found == 1){
+        printf("\nSAVED");
+        remove("save.txt");
+        rename("tempsave.txt", "save.txt");
+    }else{
+        printf("\nERROR 05");
+        remove("tempsave.txt");
+    }
+}
+
+void loaduser(){
+    char nama[100];
+    int hp, coin, point;
+
+    char tempnama[100];
+    int temphp, tempcoin, temppoint;
+    
+    char buffer[100], target[100];
+    int found = 0;  
+
+    FILE *file = fopen("save.txt", "r");
+    if(file == NULL){
+        printf("\nERROR");
+        return;
+    }
+    system("cls");
+    printf("\nList: ");
+    while(fgets(buffer, sizeof(buffer), file) != NULL){
+        sscanf(buffer, "%[^,],%d,%d,%d", tempnama, &temphp, &tempcoin, &temppoint);
+        printf("\nUsername: %s", tempnama);
+        printf("\nHP: %d    Coin: %d", temphp, tempcoin);
+        printf("\nLEVEL: %d", temppoint);
+        printf("\n");
+    }
+
+    rewind(file);
+
+    printf("\nMasukkan username yang ingin anda load: ");scanf("%s", target);
+    while(fgets(buffer, sizeof(buffer), file) != NULL){
+        sscanf(buffer, "%[^,],%d,%d,%d", tempnama, &temphp, &tempcoin, &temppoint);
+        if(strcmp(tempnama, target) == 0){
+            strcpy(nama, tempnama);
+            hp = temphp;
+            coin = tempcoin;
+            point = temppoint;
+            found = 1;
+            break;
+        }
+    }
+    
+    fclose(file);
+    if(found == 1){
+        printf("\nSelamat datang %s", nama);
+        ingame(nama, &hp, &coin, &point);
+        savefile(nama, &hp, &coin, &point);
+    }else{
+        printf("\nDATA TIDAK DITEMUKAN");
+    }
+
+}
+void newuser(){
+    char nama[100];
+    int coin = 0;
+    int hp = 1000;
+    int point = 0;
+
+    system("cls");
+    printf("\n== NEW USER ==");
+    printf("\nName: ");scanf("%s", nama);
+
+
+    FILE *file = fopen("save.txt", "a");
+    if(file== NULL){
+        printf("\nERROR");
+        return;
+    }
+
+    fprintf(file, "%s,%d,%d,%d\n", nama, hp, coin, point);
+    fclose(file);
+
+    ingame(nama, &hp, &coin, &point);
+    savefile(nama, &hp, &coin, &point);
+};
+
+
+
+int main(){
+    int choice;
+    system("cls");
+    printf("\nWELCOME TO SWITCH AND KILL");
+    printf("\n1. NEW GAME\n2. LOAD GAME");
+    printf("\nINSERT YOUR CHOICE: ");scanf("%d", &choice);
+    switch(choice){
+        case 1:
+            newuser();
+            break;
+        case 2:
+            loaduser();
+            break;
+        default:
+            printf("\nERROR");
+    }
+
+}
