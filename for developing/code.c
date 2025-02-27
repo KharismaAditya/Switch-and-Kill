@@ -61,11 +61,125 @@ const int item_price[4] = {
     100, 150, 100, 200
 };
 
+char codeskill[100] = "";
+
+
+void bossAttack(int *point, int *bossatk, int *turn, int *hp){
+    int rng = rand() % 100;
+    if(strcmp(bossname[*point], bossname[0]) == 0){
+        if(rng <= 50){
+            *bossatk = 100;
+        }else{
+            strcpy(codeskill, "FIRE STRUCK");
+            *bossatk = 200;
+        }
+    }
+
+    if(strcmp(bossname[*point], bossname[1]) == 0){
+        if(rng <= 90){
+            *bossatk = 120;
+        }else{
+            strcpy(codeskill, "BLIND");
+            *bossatk = 0;
+            *turn += 4;
+        }
+    }
+    
+    if(strcmp(bossname[*point], bossname[2]) == 0){
+        if(rng <= 85){
+            *bossatk = 150;
+        }else{
+            strcpy(codeskill, "BONE OF STEEL");
+            *bossatk = 0;
+            *turn += 3;
+        }
+    }
+
+    if(strcmp(bossname[*point], bossname[3]) == 0){
+        if(rng <= 80){
+            *bossatk = 175;
+        }else{
+            strcpy(codeskill, "ELECTRO CHARGE");
+            *bossatk = 0;
+            *turn += 3;
+        }
+    }
+
+    if(strcmp(bossname[*point], bossname[4]) == 0){
+        if(rng <= 96){
+            *bossatk = 200;
+        }else{
+            strcpy(codeskill, "EMPEROR OF TIME");
+            *bossatk = 0;
+            *turn += 5;
+        }
+    }
+
+    *hp -= *bossatk;
+}
+
+void specialskill(int *hp, int *base_atk, int *bossatk, int *turn, int *bosshp){
+    if(strcmp(codeskill, "BLIND") == 0){
+        if(*turn > 4){
+            *turn = 4;
+        }
+        *base_atk = 0;
+        (*turn)--;
+    }
+
+    if(strcmp(codeskill, "BONE OF STEEL") == 0){
+        if(*turn > 3){
+            *turn = 3;
+        }
+        *bosshp += 200;
+        (*turn)--;
+    }
+
+    if(strcmp(codeskill, "ELECTRO CHARGE") == 0){
+        if(*turn > 3){
+            *turn = 3;
+        }
+        *hp -= 50;
+        (*turn)--;
+    }
+
+    if(strcmp(codeskill, "EMPEROR OF TIME") == 0){
+        if(*turn > 5){
+            *turn = 5;
+        }
+        *hp = 100;
+        *base_atk = 10;
+        (*turn)--;
+    }
+}
+void screen(){
+    printf("\nWARNING : BOSS USING %s!!", codeskill);
+}
+void skillscreen(){
+    if(strcmp(codeskill, "FIRE STRIKE") == 0){
+        screen();
+    }
+    if(strcmp(codeskill, "BLIND") == 0){
+        screen();
+    }
+    if(strcmp(codeskill, "BONE OF STEEL") == 0){
+        screen();
+    }
+    if(strcmp(codeskill, "ELECTRO CHARGE") == 0){
+        screen();
+    }
+    if(strcmp(codeskill, "EMPEROR OF TIME") == 0){
+        screen();
+    }
+
+    sleep(2);
+}
+
 
 void gbk(int guess, int *count);
 void math(int *num1, int *num2, int *count);
 
-void dodge(int *num1, int *num2, int *count, int *hp, int *base_atk, int *bosshp, int *bossatk){
+void dodge(int *num1, int *num2, int *count, int *hp, int *base_atk, int *bosshp, int *bossatk, int *turn, int *point){
     int random;
     *count = 0;
     random = rand() % 2;
@@ -82,8 +196,9 @@ void dodge(int *num1, int *num2, int *count, int *hp, int *base_atk, int *bosshp
         *bosshp -= *base_atk;
         printf("\nCHALLANGE WIN");
     }else{
-        *hp -= *bosshp; /*STC*/
         printf("\nCHALLENGE LOSE");
+        bossAttack(point,bossatk,turn,hp);
+        skillscreen();
     }
 
 }
@@ -181,12 +296,12 @@ void math(int *num1, int *num2, int *count){
 
 }
 
-void attack(int *hp, int *bosshp, int *base_atk, int *bossatk){
+void attack(int *hp, int *bosshp, int *base_atk, int *bossatk, int *turn, int *point){
     system("cls");
     printf("\nATTACKING!!");
-    *hp -= *bossatk; /*STC*/
+    bossAttack(point,bossatk,turn,hp);
     *bosshp -= *base_atk;
-    sleep(2);
+    skillscreen();
 }
 
 void weaponidle(int *a, char wname[100]){
@@ -284,7 +399,7 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
 
 
     int bosshp[5] = { 100, 1500, 2000, 2500, 3000};
-    int bossatk[5] = { 100, 125, 150, 200, 220}; /*STC*/
+    int bossatk, turn = 0;
     int i, choice;
     if(i > 4 && *point > 4){
         i = 0;
@@ -299,13 +414,13 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
 
     for(i = *point; i < 5; i++){
         while(choice != 5){
-            
             int base_atk;
             if(c_effect1 < 0)c_effect1 = 0;
             if(c_effect2 < 0)c_effect2 = 0;
-
+            
             baseattackop(&base_atk, &a, &e_count, &c_effect1, &c_effect2, &item_effect);
             weaponidle(&a, wname);
+            specialskill(hp,&base_atk,&bossatk,&turn,bosshp);
 
             system("cls");
             printf("\nBOSS LEVEL %d", i + 1);
@@ -323,11 +438,11 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
             printf("\nINSERT YOUR CHOICE: ");scanf("%d", &choice);
             switch(choice){
                 case 1:
-                    attack(hp, &bosshp[i], &base_atk, &bossatk[i]);
+                    attack(hp, &bosshp[i], &base_atk, &bossatk, &turn, point);
                     (c_effect1)--;
                     break;
                 case 2:
-                    dodge(&num1, &num2, &count, hp, &base_atk, &bosshp[i], &bossatk[i]);
+                    dodge(&num1, &num2, &count, hp, &base_atk, &bosshp[i], &bossatk, &turn, point);
                     (c_effect2)--;
                     break;
                 case 3:
@@ -356,6 +471,7 @@ void adventurebattle(int *hp, int *coin, int *coin_menu, int num1, int num2, int
         "Goblin",
         "Knight"
     };
+    int turn = 0;
     int kroco_atk[2] = {40, 50};
 
     int i, choice;
@@ -385,11 +501,11 @@ void adventurebattle(int *hp, int *coin, int *coin_menu, int num1, int num2, int
         printf("\nYour CHOICE: ");scanf("%d", &choice);
         switch(choice){
             case 1:
-                attack(hp, &krocohp[i], &base_atk, &kroco_atk[i]);
+                attack(hp, &krocohp[i], &base_atk, &kroco_atk[i], &turn, point);
                 (c_effect1)--;
                 break;
             case 2:
-                dodge(&num1, &num2, &count, hp, &base_atk, &krocohp[i], &kroco_atk[i]);
+                dodge(&num1, &num2, &count, hp, &base_atk, &krocohp[i], &kroco_atk[i], &turn, point);
                 (c_effect2)--;
                 break;
             case 3:
@@ -409,10 +525,6 @@ void adventurebattle(int *hp, int *coin, int *coin_menu, int num1, int num2, int
     }
     printf("\nBACK TO LOBBY!");
     sleep(2);
-}
-
-void userload(char nama, int hp, int coin, int point){
-
 }
 
 void ingame(char nama[100], int *hp, int *coin, int *point){
