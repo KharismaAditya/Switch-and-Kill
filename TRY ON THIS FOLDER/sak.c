@@ -492,8 +492,8 @@ void adventurebattle(int *hp, int *coin, int *coin_menu, int num1, int num2, int
         printf("\nADVENTURE MODE!!");
         printf("\nEnemy: %s", kroco_name[i]);
         printf("\nEnemy Hp: %d", krocohp[i]);
-        printf("\nYour Weapon: %s", wname);
         printf("\nYOUR HP: %d\tYOUR COIN: %d", *hp, *coin);
+        printf("\nYour Weapon: %s", wname);
         effectindicator(&c_effect1, &c_effect2);
         printf("\nMake Your Move: ");
         printf("\n1. ATTACK\n2. DEFENDS (DODGE)\n3. CHANGE WEAPON\n4. SHOP\n5. EXIT");
