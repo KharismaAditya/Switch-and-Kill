@@ -427,9 +427,8 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
             printf("\nBOSS NAME: %s", bossname[*point]);
             printf("\nBOSS HP: %d", bosshp[*point]);
             printf("\n");
-            printf("\nYOUR HP: %d", *hp);
+            printf("\nYOUR HP: %d\tYOUR COIN: %d", *hp, *coin);
             printf("\nYOUR WEAPON: %s", wname);
-            printf("\nCOIN : %d", *coin);
 
             effectindicator(&c_effect1, &c_effect2);
 
@@ -542,8 +541,7 @@ void ingame(char nama[100], int *hp, int *coin, int *point){
         system("cls");
         printf("\n==TOWNHALL==");
         printf("\nNAME: %s", nama);
-        printf("\nYour HP: %d", *hp);
-        printf("\nYour Coin: %d", *coin);
+        printf("\nYour HP: %d\tYour Coin: %d", *hp, *coin);
         printf("\nWHAT WILL YOU DO?");
         printf("\n1. DUNGEON(Level : %d)\n2. ADVENTURE\n3. EXIT", *point + 1);
         printf("\nYour Choice: ");scanf("%d", &choice);
