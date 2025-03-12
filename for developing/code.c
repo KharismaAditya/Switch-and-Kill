@@ -398,7 +398,7 @@ void effectindicator(int *c_effect1, int *c_effect2){
 void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_menu, int *s_count, int *point){
 
 
-    int bosshp[5] = { 100, 1500, 2000, 2500, 3000};
+    int bosshp[5] = { 1000, 1500, 2000, 2500, 3000};
     int bossatk, turn = 0;
     int i, choice;
     if(i > 4 && *point > 4){
@@ -427,9 +427,8 @@ void bodybattle(int num1, int num2, int count, int *hp, int *coin, int *coin_men
             printf("\nBOSS NAME: %s", bossname[*point]);
             printf("\nBOSS HP: %d", bosshp[*point]);
             printf("\n");
-            printf("\nYOUR HP: %d", *hp);
+            printf("\nYOUR HP: %d\tYOUR COIN: %d", *hp, *coin);
             printf("\nYOUR WEAPON: %s", wname);
-            printf("\nCOIN : %d", *coin);
 
             effectindicator(&c_effect1, &c_effect2);
 
@@ -493,8 +492,8 @@ void adventurebattle(int *hp, int *coin, int *coin_menu, int num1, int num2, int
         printf("\nADVENTURE MODE!!");
         printf("\nEnemy: %s", kroco_name[i]);
         printf("\nEnemy Hp: %d", krocohp[i]);
-        printf("\nYour Weapon: %s", wname);
         printf("\nYOUR HP: %d\tYOUR COIN: %d", *hp, *coin);
+        printf("\nYour Weapon: %s", wname);
         effectindicator(&c_effect1, &c_effect2);
         printf("\nMake Your Move: ");
         printf("\n1. ATTACK\n2. DEFENDS (DODGE)\n3. CHANGE WEAPON\n4. SHOP\n5. EXIT");
@@ -542,8 +541,7 @@ void ingame(char nama[100], int *hp, int *coin, int *point){
         system("cls");
         printf("\n==TOWNHALL==");
         printf("\nNAME: %s", nama);
-        printf("\nYour HP: %d", *hp);
-        printf("\nYour Coin: %d", *coin);
+        printf("\nYour HP: %d\tYour Coin: %d", *hp, *coin);
         printf("\nWHAT WILL YOU DO?");
         printf("\n1. DUNGEON(Level : %d)\n2. ADVENTURE\n3. EXIT", *point + 1);
         printf("\nYour Choice: ");scanf("%d", &choice);
