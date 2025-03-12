@@ -1,2 +1,2 @@
-Kharisma,1035,230,1
+Kharisma,995,80,1
 Aditya,900,33,0
