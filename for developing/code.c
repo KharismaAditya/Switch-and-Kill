@@ -63,6 +63,18 @@ const int item_price[4] = {
 
 char codeskill[100] = "";
 
+void enterdungeon(){
+    system("cls");
+    printf("\nMEMASUKI DUNGEON...");
+    sleep(1);
+}
+
+void enteradven(){
+    system("cls");
+    printf("\nMEMASUKI ADVENTURE..");
+    sleep(1);
+}
+
 
 void bossAttack(int *point, int *bossatk, int *turn, int *hp){
     int rng = rand() % 100;
@@ -547,9 +559,11 @@ void ingame(char nama[100], int *hp, int *coin, int *point){
         printf("\nYour Choice: ");scanf("%d", &choice);
         switch(choice){
             case 1:
+                enterdungeon();
                 bodybattle(num1, num2, count, hp, coin, &coin_menu, &count, point);
                 break;
             case 2:
+                enteradven();
                 adventurebattle(hp, coin, &coin_menu, num1, num2, count, point);
                 break;
             case 3:
@@ -588,8 +602,10 @@ void savefile(char nama[100], int *hp, int *coin, int *point){
     fclose(temp);fclose(file);
     if(found == 1){
         printf("\nSAVED");
+        printf("\nMENINGGALKAN PERMAINAN");
         remove("save.txt");
         rename("tempsave.txt", "save.txt");
+        sleep(2);
     }else{
         printf("\nERROR 05");
         remove("tempsave.txt");
@@ -638,7 +654,10 @@ void loaduser(){
     
     fclose(file);
     if(found == 1){
-        printf("\nSelamat datang %s", nama);
+        system("cls");
+        printf("\nSelamat datang %s\n", nama);
+        printf("\nMEMASUKI GAME..");
+        sleep(2);
         ingame(nama, &hp, &coin, &point);
         savefile(nama, &hp, &coin, &point);
     }else{
